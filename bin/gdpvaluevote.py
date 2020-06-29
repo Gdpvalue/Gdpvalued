@@ -23,11 +23,11 @@ git_dir = os.path.abspath(
         '..'))
 dash_conf_dir = os.path.join(os.getenv('HOME'), '.dashcore')
 dash_cli_path = os.getenv('DASH_CLI')
-if os.getenv('DASHMAN_PID') is None:
-    quit("--> please run using 'dashman vote'")
+if os.getenv('GDPVALUE_PID') is None:
+    quit("--> please run using 'gdpvalue vote'")
 
 sys.path.append(git_dir + '/lib')
-import dashutil
+import gdpvalueutil
 
 
 urnd = random.SystemRandom()
@@ -84,7 +84,7 @@ def run_command(cmd):
     return subprocess.check_output(cmd, shell=True)
 
 def run_dash_cli_command(cmd):
-    return run_command("%s %s" % (dash_cli_path or 'dash-cli', cmd))
+    return run_command("%s %s" % (gdpvalue_cli_path or 'gdpvalue-cli', cmd))
 
 def next_vote(sel_ent):
     sel_ent += 1
@@ -310,22 +310,22 @@ def main(screen):
     C_GREEN = curses.color_pair(3)
     C_RED = curses.color_pair(2)
 
-    if dash_cli_path is None:
-        # test dash-cli in path -- TODO make robust
+    if gdpvalue_cli_path is None:
+        # test gdpvalue-cli in path -- TODO make robust
         try:
-            run_command('dash-cli getinfo')
+            run_command('gdpvalue-cli getinfo')
         except subprocess.CalledProcessError:
             quit(
-                "--> cannot find dash-cli in $PATH\n" +
-                "    do: export PATH=/path/to/dash-cli-folder:$PATH\n" +
+                "--> cannot find gdpvalue-cli in $PATH\n" +
+                "    do: export PATH=/path/to/gdpvalue-cli-folder:$PATH\n" +
                 "    and try again\n")
 
     loadwin = curses.newwin(40, 40, 1, 2)
 
     loadwin.addstr(1, 2, 'dashvote version: ' + version, C_CYAN)
 
-    mncount = int(run_dash_cli_command('masternode count enabled'))
-    block_height = int(run_dash_cli_command('getblockcount'))
+    mncount = int(run_gdpvalue_cli_command('masternode count enabled'))
+    block_height = int(run_gdpvalue_cli_command('getblockcount'))
     blocks_to_next_cycle = (16616 - (block_height % 16616))
     next_cycle_epoch = int(int(time.time()) + (157.5 * blocks_to_next_cycle))
     days_to_next_cycle = blocks_to_next_cycle / 576.0
@@ -337,7 +337,7 @@ def main(screen):
     time.sleep(1)
 
     # get ballot
-    ballots = json.loads(run_dash_cli_command('gobject list all'))
+    ballots = json.loads(run_gdpvalue_cli_command('gobject list all'))
     ballot = {}
 
     for entry in ballots:
@@ -364,7 +364,7 @@ def main(screen):
             continue
 
         ballots[entry][u'vote'] = 'SKIP'
-        ballots[entry][u'votes'] = json.loads(run_dash_cli_command('gobject getvotes %s' % entry))
+        ballots[entry][u'votes'] = json.loads(run_gdpvalue_cli_command('gobject getvotes %s' % entry))
 
         ballot[entry] = ballots[entry]
 
@@ -420,8 +420,8 @@ def main(screen):
                 "txid": conf[3],
                 "txout": conf[4]}
     if not masternodes:
-        # fallback to dash.conf entries if no masternode.conf entries
-        with open(os.path.join(dash_conf_dir, 'dash.conf'), 'r') as f:
+        # fallback to gdpvalue.conf entries if no masternode.conf entries
+        with open(os.path.join(gdpvalue_conf_dir, 'gdpvalue.conf'), 'r') as f:
             lines = list(
                 line
                 for line in
@@ -432,17 +432,17 @@ def main(screen):
                 n, v = line.split('=')
                 conf[n.strip(' ')] = v.strip(' ')
             if all(k in conf for k in ('masternode', 'externalip', 'masternodeprivkey')):
-                # get funding tx from dashninja
+                # get funding tx from gdpvalueninja
                 import urllib2
                 mninfo = urllib2.urlopen(
-                    "https://dashninja.pl/api/masternodes?ips=[\"" +
+                    "https://gdpvalueninja.pl/api/masternodes?ips=[\"" +
                     conf['externalip'] + ":9999" +
                     "\"]&portcheck=1").read()
                 try:
                     mndata = json.loads(mninfo)
                     d = mndata[u'data'][0]
                 except:
-                    quit('cannot retrieve masternode info from dashninja')
+                    quit('cannot retrieve masternode info from gdpvalueninja')
                 vin = str(d[u'MasternodeOutputHash'])
                 vidx = str(d[u'MasternodeOutputIndex'])
                 masternodes[vin + '-' + vidx] = {
@@ -454,7 +454,7 @@ def main(screen):
                     "txid": vin,
                     "txout": vidx}
             else:
-                quit('cannot find masternode information in dash.conf')
+                quit('cannot find masternode information in gdpvalue.conf')
 
     # TODO open previous votes/local storage something
     for entry in ballot:
@@ -478,7 +478,7 @@ def main(screen):
     votewin.keypad(1)
     votewin.border()
 
-    votewin.addstr(1, 2, 'dashvote version: ' + version, C_CYAN)
+    votewin.addstr(1, 2, 'gdpvaluevote version: ' + version, C_CYAN)
     votewin.addstr(
         2,
         2,
