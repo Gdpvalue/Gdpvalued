@@ -2,7 +2,7 @@
 
 # dashman_functions.sh - common functions and variables
 
-# Copyright (c) 2015-2019 moocowmoo - moocowmoo@masternode.me
+# Copyright (c) 2015 - 2020 The AYCHDeveloper
 
 # variables are for putting things in ----------------------------------------
 
@@ -25,16 +25,16 @@ if [ -t 1 ] || [ ! -z "$FORCE_COLOR" ] ; then
 fi
 
 
-GITHUB_API_DASH="https://api.github.com/repos/dashpay/dash"
+GITHUB_API_GDPVALUE="https://api.github.com/repos/gdpvalue/gdpvalued"
 
-DASHD_RUNNING=0
-DASHD_RESPONDING=0
-DASHMAN_VERSION=$(cat $DASHMAN_GITDIR/VERSION)
-DASHMAN_CHECKOUT=$(GIT_DIR=$DASHMAN_GITDIR/.git GIT_WORK_TREE=$DASHMAN_GITDIR git describe --dirty | sed -e "s/^.*-\([0-9]\+-g\)/\1/" )
-if [ "$DASHMAN_CHECKOUT" == "v"$DASHMAN_VERSION ]; then
-    DASHMAN_CHECKOUT=""
+GDPVALUED_RUNNING=0
+GDPVALUED_RESPONDING=0
+GDPVALUE_VERSION=$(cat $GDPVALUE_GITDIR/VERSION)
+GDPVALUE_CHECKOUT=$(GIT_DIR=$GDPVALUE_GITDIR/.git GIT_WORK_TREE=$GDPVALUE_GITDIR git describe --dirty | sed -e "s/^.*-\([0-9]\+-g\)/\1/" )
+if [ "$GDPVALUE_CHECKOUT" == "v"$GDPVALUE_VERSION ]; then
+    GDPVALUE_CHECKOUT=""
 else
-    DASHMAN_CHECKOUT=" ("$DASHMAN_CHECKOUT")"
+    GDPVALUE_CHECKOUT=" ("$GDPVALUE_CHECKOUT")"
 fi
 
 [ -z "$CACHE_EXPIRE" ] && CACHE_EXPIRE=5
@@ -43,11 +43,11 @@ fi
 CACHE_CMD=''
 [ $ENABLE_CACHE -gt 0 ] && CACHE_CMD='cached_cmd'
 
-CACHE_DIR=/tmp/dashman_cache
+CACHE_DIR=/tm/gdpvalue_cache
 mkdir -p $CACHE_DIR
 chmod 700 $CACHE_DIR
 
-curl_cmd="timeout 7 curl -k -s -L -A dashman/$DASHMAN_VERSION"
+curl_cmd="timeout 7 curl -k -s -L -A dashman/$GDPVALUE_VERSION"
 function cached_cmd() {
     cmd=""
     whitespace="[[:space:]]"
@@ -244,17 +244,17 @@ _check_dependencies() {
 
 }
 
-# attempt to locate dash-cli executable.
-# search current dir, ~/.dash, `which dash-cli` ($PATH), finally recursive
-_find_dash_directory() {
+# attempt to locate gdpvalue-cli executable.
+# search current dir, ~/.gdpvalue, `which gdpvalue-cli` ($PATH), finally recursive
+_find_gdpvalue_directory() {
 
     INSTALL_DIR=''
 
-    # dash-cli in PATH
+    # gdpvalue-cli in PATH
 
-    if [ ! -z $(which dash-cli 2>/dev/null) ] ; then
-        INSTALL_DIR=$(readlink -f `which dash-cli`)
-        INSTALL_DIR=${INSTALL_DIR%%/dash-cli*};
+    if [ ! -z $(which gdpvalue-cli 2>/dev/null) ] ; then
+        INSTALL_DIR=$(readlink -f `which gdpvalue-cli`)
+        INSTALL_DIR=${INSTALL_DIR%%/gdpvalue-cli*};
 
 
         #TODO prompt for single-user or multi-user install
@@ -266,68 +266,68 @@ _find_dash_directory() {
 
             # if not run as root
             if [ $EUID -ne 0 ] ; then
-                die "\n${messages["exec_found_in_system_dir"]} $INSTALL_DIR${messages["run_dashman_as_root"]} ${messages["exiting"]}"
+                die "\n${messages["exec_found_in_system_dir"]} $INSTALL_DIR${messages["run_gdpvalue_as_root"]} ${messages["exiting"]}"
             fi
         fi
 
-    # dash-cli not in PATH
+    # gdpvalue-cli not in PATH
 
         # check current directory
-    elif [ -e ./dash-cli ] ; then
+    elif [ -e ./gdpvalue-cli ] ; then
         INSTALL_DIR='.' ;
 
-        # check ~/.dash directory
-    elif [ -e $HOME/.dash/dash-cli ] ; then
-        INSTALL_DIR="$HOME/.dash" ;
+        # check ~/.gdpvalue directory
+    elif [ -e $HOME/.gdpvalue/gdpvalue-cli ] ; then
+        INSTALL_DIR="$HOME/.gdpvalue" ;
 
-    elif [ -e $HOME/.dashcore/dash-cli ] ; then
-        INSTALL_DIR="$HOME/.dashcore" ;
+    elif [ -e $HOME/.gdpvalue/gdpvalue-cli ] ; then
+        INSTALL_DIR="$HOME/.gdpvalue" ;
 
-        # TODO try to find dash-cli with find
+        # TODO try to find gdpvalue-cli with find
 #    else
-#        CANDIDATES=`find $HOME -name dash-cli`
+#        CANDIDATES=`find $HOME -name gdpvalue-cli`
     fi
 
     if [ ! -z "$INSTALL_DIR" ]; then
         INSTALL_DIR=$(readlink -f $INSTALL_DIR) 2>/dev/null
         if [ ! -e $INSTALL_DIR ]; then
-            echo -e "${C_RED}${messages["dashcli_not_found_in_cwd"]}, ~/.dashcore, or \$PATH. -- ${messages["exiting"]}$C_NORM"
+            echo -e "${C_RED}${messages["gdpvaluecli_not_found_in_cwd"]}, ~/.gdpvalue, or \$PATH. -- ${messages["exiting"]}$C_NORM"
             exit 1
         fi
     else
-        echo -e "${C_RED}${messages["dashcli_not_found_in_cwd"]}, ~/.dashcore, or \$PATH. -- ${messages["exiting"]}$C_NORM"
+        echo -e "${C_RED}${messages["gdpvaluecli_not_found_in_cwd"]}, ~/.gdpvalue, or \$PATH. -- ${messages["exiting"]}$C_NORM"
         exit 1
     fi
 
-    DASH_CLI="$INSTALL_DIR/dash-cli"
+    GDPVALUE_CLI="$INSTALL_DIR/gdpvalue-cli"
 
-    # check INSTALL_DIR has dashd and dash-cli
-    if [ ! -e $INSTALL_DIR/dashd ]; then
-        echo -e "${C_RED}${messages["dashd_not_found"]} $INSTALL_DIR -- ${messages["exiting"]}$C_NORM"
+    # check INSTALL_DIR has gdpvalued and gdpvalue-cli
+    if [ ! -e $INSTALL_DIR/gdpvalued ]; then
+        echo -e "${C_RED}${messages["gdpvalued_not_found"]} $INSTALL_DIR -- ${messages["exiting"]}$C_NORM"
         exit 1
     fi
 
-    if [ ! -e $DASH_CLI ]; then
-        echo -e "${C_RED}${messages["dashcli_not_found"]} $INSTALL_DIR -- ${messages["exiting"]}$C_NORM"
+    if [ ! -e $GDPVALUE_CLI ]; then
+        echo -e "${C_RED}${messages["gdpvaluecli_not_found"]} $INSTALL_DIR -- ${messages["exiting"]}$C_NORM"
         exit 1
     fi
 
-    DASH_CLI="$CACHE_CMD $INSTALL_DIR/dash-cli"
+    GDPVALUE_CLI="$CACHE_CMD $INSTALL_DIR/gdpvalue-cli"
 
 }
 
 
-_check_dashman_updates() {
-    GITHUB_DASHMAN_VERSION=$( $curl_cmd https://raw.githubusercontent.com/moocowmoo/dashman/master/VERSION )
-    if [ ! -z "$GITHUB_DASHMAN_VERSION" ] && [ "$DASHMAN_VERSION" != "$GITHUB_DASHMAN_VERSION" ]; then
+_check_gdpvalue_updates() {
+    GITHUB_GDPVALUE_VERSION=$( $curl_cmd https://raw.githubusercontent.com/moocowmoo/dashman/master/VERSION )
+    if [ ! -z "$GITHUB_GDPVALUE_VERSION" ] && [ "$GDPVALUE_VERSION" != "$GITHUB_GDPVALUE_VERSION" ]; then
         echo -e "\n"
-        echo -e "${C_RED}${0##*/} ${messages["requires_updating"]} $C_GREEN$GITHUB_DASHMAN_VERSION$C_RED\n${messages["requires_sync"]}$C_NORM\n"
+        echo -e "${C_RED}${0##*/} ${messages["requires_updating"]} $C_GREEN$GITHUB_GDPVALUE_VERSION$C_RED\n${messages["requires_sync"]}$C_NORM\n"
 
         pending "${messages["sync_to_github"]} "
 
         if confirm " [${C_GREEN}y${C_NORM}/${C_RED}N${C_NORM}] $C_CYAN"; then
-            echo $DASHMAN_VERSION > $DASHMAN_GITDIR/PREVIOUS_VERSION
-            exec $DASHMAN_GITDIR/${0##*/} sync $COMMAND
+            echo $GDPVALUE_VERSION > $GDPVALUE_GITDIR/PREVIOUS_VERSION
+            exec $GDPVALUE_GITDIR/${0##*/} sync $COMMAND
         fi
         die "${messages["exiting"]}"
     fi
@@ -370,7 +370,7 @@ _get_versions() {
         DOWNLOAD_FOR='RPi2'
     fi
 
-    GITHUB_RELEASE_JSON="$($curl_cmd $GITHUB_API_DASH/releases/latest | python -mjson.tool)"
+    GITHUB_RELEASE_JSON="$($curl_cmd $GITHUB_API_GDPVALUE/releases/latest | python -mjson.tool)"
     CHECKSUM_URL=$(echo "$GITHUB_RELEASE_JSON" | grep browser_download | grep SUMS.asc | cut -d'"' -f4)
     CHECKSUM_FILE=$( $curl_cmd $CHECKSUM_URL )
 
@@ -378,13 +378,13 @@ _get_versions() {
     #$(( <-- vim syntax highlighting fix
 
     LATEST_VERSION=$(echo "$GITHUB_RELEASE_JSON" | grep tag_name | cut -d'"' -f4 | tr -d 'v')
-    TARDIR="dashcore-${LATEST_VERSION::-2}"
+    TARDIR="gdpvalue-${LATEST_VERSION::-2}"
     if [ -z "$LATEST_VERSION" ]; then
         die "\n${messages["err_could_not_get_version"]} -- ${messages["exiting"]}"
     fi
 
-    if [ -z "$DASH_CLI" ]; then DASH_CLI='echo'; fi
-    CURRENT_VERSION=$( $DASH_CLI --version | perl -ne '/v([0-9.]+)/; print $1;' 2>/dev/null ) 2>/dev/null
+    if [ -z "$GDPVALUE_CLI" ]; then GDPVALUE_CLI='echo'; fi
+    CURRENT_VERSION=$( $GDPVALUE_CLI --version | perl -ne '/v([0-9.]+)/; print $1;' 2>/dev/null ) 2>/dev/null
     for url in "${DOWNLOAD_URLS[@]}"
     do
         if [[ $url =~ .*${PLAT}-linux.* ]] ; then
@@ -395,28 +395,28 @@ _get_versions() {
 }
 
 
-_check_dashd_state() {
-    _get_dashd_proc_status
-    DASHD_RUNNING=0
-    DASHD_RESPONDING=0
-    if [ $DASHD_HASPID -gt 0 ] && [ $DASHD_PID -gt 0 ]; then
-        DASHD_RUNNING=1
+_check_gdpvalued_state() {
+    _get_gdpvalued_proc_status
+    GDPVALUED_RUNNING=0
+    GDPVALUED_RESPONDING=0
+    if [ $GDPVALUED_HASPID -gt 0 ] && [ $GDPVALUED_PID -gt 0 ]; then
+        GDPVALUED_RUNNING=1
     fi
-    $DASH_CLI getinfo >/dev/null 2>&1
+    $GDPVALUE_CLI getinfo >/dev/null 2>&1
     if [ $? -eq 0 ] || [ $? -eq 28 ]; then
-        DASHD_RESPONDING=1
+        GDPVALUED_RESPONDING=1
     fi
 }
 
-restart_dashd(){
+restart_gdpvalued(){
 
-    if [ $DASHD_RUNNING == 1 ]; then
-        pending " --> ${messages["stopping"]} dashd. ${messages["please_wait"]}"
-        $DASH_CLI stop 2>&1 >/dev/null
+    if [ $GDPVALUED_RUNNING == 1 ]; then
+        pending " --> ${messages["stopping"]} gdpvalued. ${messages["please_wait"]}"
+        $GDPVALUE_CLI stop 2>&1 >/dev/null
         sleep 10
-        killall -9 dashd dash-shutoff 2>/dev/null
+        killall -9 gdpvalued gdpvalue-shutoff 2>/dev/null
         ok "${messages["done"]}"
-        DASHD_RUNNING=0
+        GDPVALUED_RUNNING=0
     fi
 
     pending " --> ${messages["deleting_cache_files"]}"
@@ -440,13 +440,13 @@ restart_dashd(){
 
     pending " --> ${messages["starting_dashd"]}"
     $INSTALL_DIR/dashd 2>&1 >/dev/null
-    DASHD_RUNNING=1
+    GDPVALUED_RUNNING=1
     ok "${messages["done"]}"
 
     pending " --> ${messages["waiting_for_dashd_to_respond"]}"
     echo -en "${C_YELLOW}"
-    DASHD_RESPONDING=0
-    while [ $DASHD_RUNNING == 1 ] && [ $DASHD_RESPONDING == 0 ]; do
+    GDPVALUED_RESPONDING=0
+    while [ $GDPVALUED_RUNNING == 1 ] && [ $GDPVALUED_RESPONDING == 0 ]; do
         echo -n "."
         _check_dashd_state
         sleep 2
