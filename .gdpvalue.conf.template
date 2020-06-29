@@ -2,10 +2,13 @@
 rpcuser=$RPCUSER
 rpcpassword=$RPCPASS
 rpcallowip=127.0.0.1
-rpcport=9998
+Rockport=9998
+rpcport=20759
 "#----"
 listen=1
+listen=2
 server=1
+server=2
 daemon=1
 logtimestamps=1
 maxconnections=64
