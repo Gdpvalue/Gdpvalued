@@ -1,6 +1,6 @@
-# dashman
+#  GDPVALUED
 
-DASH wallet/daemon management utilities - version 0.1.28
+GDPVALUED wallet/daemon management utilities - version 0.1.28 for use of GDPVALUE.
 
 * This script installs, updates, and manages single-user dash daemons and wallets
 * It is currently only compatible with 32/64 bit linux.
@@ -8,72 +8,72 @@ DASH wallet/daemon management utilities - version 0.1.28
 
 # Install/Usage
 
-To install dashman do:
+To install gdpvalued do:
 
     sudo apt-get install python git unzip pv
-    cd ~ && git clone https://github.com/moocowmoo/dashman
+    cd ~ && git clone https://github.com/gdpvalue/gdpvalued
 
 To update your existing version 12 32/64bit linux dash wallet to the latest
 dashd, do:
 
-    dashman/dashman update
+    gdpvalued/gdpvalued update
 
-To perform a new install of dash, do:
+To perform a new install of gdpvalued, do:
 
-    dashman/dashman install
+    gdpvalued/gdpvalued install
 
 To overwrite an existing dash install, do:
 
-    dashman/dashman reinstall
+    gdpvalued/gdpvalued reinstall
 
-To update dashman to the latest version, do:
+To update gdpvalued to the latest version, do:
 
-    dashman/dashman sync
+    gdpvalued/gdpvalued sync
 
-To restart (or start) dashd, do:
+To restart (or start) gdpvaluedd, do:
 
-    dashman/dashman restart
+    gdpvalued/gdpvalued restart
 
-To get the current status of dashd, do:
+To get the current status of gdpvaluedd, do:
 
-    dashman/dashman status
+    gdpvalued/gdpvalued status
 
 
 # Commands
 
 ## sync
 
-"dashman sync" updates dashman to the latest version from github
+"gdpvalued sync" updates gdpvalued to the latest version from github
 
 ## install
 
-"dashman install" downloads and initializes a fresh dash install into ~/.dashcore
+"gdpvalued install" downloads and initializes a fresh gdpvalued install into ~/.gdpvalued
 unless already present
 
 ## reinstall
 
-"dashman reinstall" downloads and overwrites existing dash executables, even if
+"gdpvalued reinstall" downloads and overwrites existing gdpvalued executables, even if
 already present
 
 ## update
 
-where it all began, "dashman update" searches for your dashd/dash-cli
-executibles in the current directory, ~/.dashcore, and $PATH.  It will prompt
-to install in the first directory found containing both dashd and dash-cli.
+where it all began, "gdpvalued update" searches for your gdpvaluedd/gdpvalue-cli
+executibles in the current directory, ~/.gdpvalued, and $PATH.  It will prompt
+to install in the first directory found containing bothgdpvaluedd and gdpvalued-cli.
 Multiple wallet directories are not supported. The script assumes the host runs
-a single instance of dashd.
+a single instance of gdpvaluedd.
 
 ## restart
 
-"dashman restart [now]" restarts (or starts) dashd. Searches for dash-cli/dashd
-the current directory, ~/.dashcore, and $PATH. It will prompt to restart if not
+"gdpvalued restart [now]" restarts (or starts) gdpvaluedd. Searches for gdpvalued-cli/gdpvaluedd
+the current directory, ~/.gdpvalued, and $PATH. It will prompt to restart if not
 given the optional 'now' argument.
 
 <a href="#restart-1">screencap</a>
 
 ## status
 
-"dashman status" interrogates the locally running dashd and displays its status
+"gdpvalued status" interrogates the locally running gdpvaluedd and displays its status
 
 <a href="#status-1">screencap</a>
 
@@ -86,30 +86,31 @@ given the optional 'now' argument.
 * pv
 * python
 * unzip
-* dashd, dash-cli - version 12 or greater to update
+* gdpvaluedd, gdpvalued-cli - version 12 or greater to update
 
 # Screencaps
 
 ### install
 
-<img src="https://raw.githubusercontent.com/moocowmoo/dashman/master/screencaps/dashman_0.1-install.png">
+<img src="https://raw.githubusercontent.com/gdpvalue/gdpvalued/master/screencaps/gdpvalued_0.1-install.png">
 
 ### update
 
-<img src="https://raw.githubusercontent.com/moocowmoo/dashman/master/screencaps/dashman_0.1-update.png">
+<img src="https://raw.githubusercontent.com/gdpvalue/gdpvalued/master/screencaps/gdpvalued_0.1-update.png">
 
 ### reinstall
 
-<img src="https://raw.githubusercontent.com/moocowmoo/dashman/master/screencaps/dashman_0.1-reinstall.png">
+<img src="https://raw.githubusercontent.com/gdpvalue/gdpvalued/master/screencaps/gdpvalued_0.1-reinstall.png">
 
 ### restart
 
-<img src="https://raw.githubusercontent.com/moocowmoo/dashman/master/screencaps/dashman_0.1-restart.png">
+<img src="https://raw.githubusercontent.com/gdpvalue/gdpvalued/master/screencaps/gdpvalued_0.1-restart.png">
 
 ### status
 
-<img src="https://raw.githubusercontent.com/moocowmoo/dashman/master/screencaps/dashman_0.1-status.png">
+<img src="https://raw.githubusercontent.com/gdpvalue/gdpvalued/master/screencaps/gdpvalued_0.1-status.png">
 
 # Contact
 
-Email me at moocowmoo@masternode.me or submit a pull request.
+Click at [GDPVALUE](https://gitter.im/GDPValued/community/) or make a [pull request](Https://github.com/gdpvalue/gdpvalued/).
+
