@@ -59,7 +59,7 @@ def sign_vote(votestr, mnprivkey):
             return sig
 
 
-def verify_dash_signature(generator, address, message, signature):
+def verify_gdpvalue_signature(generator, address, message, signature):
     compressed = False
     G = generator
     curve = G.curve()
@@ -91,5 +91,5 @@ def verify_dash_signature(generator, address, message, signature):
     minus_e = -e % order
     inv_r = numbertheory.inverse_mod(r, order)
     Q = inv_r * (R * s + G * minus_e)
-    key = Key(public_pair=(Q.x(), Q.y()), netcode='DASH')
+    key = Key(public_pair=(Q.x(), Q.y()), netcode='GDPVALUE')
     return key.address(use_uncompressed=not compressed) == address
