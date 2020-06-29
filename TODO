@@ -1,7 +1,7 @@
 
  - system lib (/usr/bin /usr/local/bin) support
 
- - notification when protocol is updated (to resend masternode starts)
+ - notification when protocol is updated (to resend masternode starts), done.
 
  - testnet support (which will probably require arbitrary directory location support first)
 
